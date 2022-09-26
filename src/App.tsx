@@ -1,12 +1,15 @@
-import type { Component } from 'solid-js';
-import Sidebar from './components/Sidebar';
-import TableList from './views/TablesList';
+import { Component, Show, useContext } from 'solid-js';
+import { AppContext } from './AppProvider';
+import ConnectView from './views/ConnectView';
+import DatabaseView from './views/DatabaseView';
 
 const App: Component = () => {
+  const [{ ui }] = useContext(AppContext);
   return (
     <div>
-      <Sidebar />
-      <TableList />
+      <Show when={ui.connected} fallback={<ConnectView />}>
+        <DatabaseView />
+      </Show>
     </div>
   );
 };
