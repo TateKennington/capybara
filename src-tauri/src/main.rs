@@ -81,14 +81,14 @@ async fn list_tables(connection: State<'_, DbConnection>) -> Result<DatabaseInfo
         pool.as_ref().unwrap().clone()
     };
 
-    let start = Instant::now();
+    //let start = Instant::now();
     let result = pool
         .fetch_all(
             "SELECT table_name from information_schema.tables WHERE table_schema not in ('information_schema', 'pg_catalog') and table_type = 'BASE TABLE'",
         )
         .await
         .unwrap();
-    println!("DB schema loaded in: {}ms", start.elapsed().as_millis());
+    //println!("DB schema loaded in: {}ms", start.elapsed().as_millis());
     let mut tables = HashMap::default();
     let table_names = result
         .iter()
@@ -102,12 +102,12 @@ async fn list_tables(connection: State<'_, DbConnection>) -> Result<DatabaseInfo
 
 async fn list_table(table_name: &String, pool: &PgPool) -> Table {
     let mut conn = pool.acquire().await.unwrap();
-    let start = Instant::now();
+    //let start = Instant::now();
     let result = sqlx::query(&format!("SELECT * from {}", &table_name))
         .fetch_all(&mut conn)
         .await
         .unwrap();
-    println!("{table_name} loaded in: {}ms", start.elapsed().as_millis());
+    //println!("{table_name} loaded in: {}ms", start.elapsed().as_millis());
     let mut columns = vec![];
     let rows = result
         .iter()

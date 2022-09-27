@@ -4,27 +4,41 @@ import {
 } from "solid-js";
 import { createStore, reconcile } from "solid-js/store";
 
+interface DatabaseData {
+    tables?: Record<string, {
+        rows: Array<Array<any>>,
+        columns: Array<any>
+    }>
+}
+
 interface State {
-    ui: {
-        connected: boolean | null,
-        tabs: Array<string>
+    ui?: {
+        connected?: boolean,
+        tabs: Array<string>,
+        dataPanel?: {
+            table: string,
+            id: any,
+            index: number
+        }
     },
-    database: Record<string, any>
+    database: DatabaseData
 }
 
 interface Actions {
     updateConnection: (status: boolean) => void
-    updateDatabase: (database: Record<string, any>) => void
+    updateDatabase: (database: DatabaseData) => void
     //UI
     openTab: (tab: string) => void
+    openDataPanel: (table: string, id: any, index: number) => void
 }
 
 type Store = [State, Actions];
 
 const initialState: State = {
     ui: {
-        connected: null,
-        tabs: []
+        connected: undefined,
+        tabs: [],
+        dataPanel: undefined,
     },
     database: {}
 };
@@ -40,12 +54,15 @@ export function AppProvider(props: ParentProps<{}>) {
             updateConnection: (status) => {
                 setState('ui', 'connected', () => status);
             },
-            updateDatabase: (database: Record<string, any>) => {
+            updateDatabase: (database: DatabaseData) => {
                 setState('database', reconcile(database, { merge: true }))
             },
             openTab: (tab: string) => {
                 setState('ui', 'tabs', (tabs) => [...tabs, tab])
-            }
+            },
+            openDataPanel: (table, id, index) => {
+                setState('ui', 'dataPanel', () => ({ table, id, index }))
+            },
         }
     ];
 

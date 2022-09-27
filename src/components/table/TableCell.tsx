@@ -1,8 +1,8 @@
 import { Component } from 'solid-js';
 
-const TableCell: Component<{ item: any }> = ({ item }) => {
+const TableCell: Component<{ item: any, onClick: () => void }> = ({ item, onClick }) => {
     return (
-        <td>
+        <td onClick={() => onClick()}>
             {item}
         </td>
     );
